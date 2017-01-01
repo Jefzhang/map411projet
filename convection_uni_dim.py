@@ -15,7 +15,7 @@ lg = 50       # intervalle en x=[0,lg]
 dx = 0.1      # dx = pas d'espace
 dt = 0.025    # dt = pas de temps
 Tfinal = 5   # Temps final souhaite
-Vitesse = 2   # Vitesse de difusion
+Vitesse = 1   # Vitesse de difusion
 Coeffi = 1    #Coefficient de difusion
 xmean = 20
 sigma = 1
@@ -29,7 +29,7 @@ def funInit(x,x0,sigma):
 # Initialisation
 nx =  int(lg/dx)-1  # nx = nombre d'intervals-1 , =N
 x = np.linspace(0,lg,nx+2)
-print(len(x))
+#print(len(x))
 
 # Initialize u0
 u0 = np.zeros(len(x))
@@ -53,9 +53,9 @@ plt.close(fig)
 # Schemas numeriques
 
 # Initialize u by the initial data u0
-uexpcen = u0.copy()
-uexpdecen = u0.copy()
-ucrankni = u0.copy()
+uexpcen = u0.copy()      #initial value of schema explicite centree
+uexpdecen = u0.copy()    #initial value of schema explicite decentree
+ucrankni = u0.copy()     #initial value of schema Crank-Nicholson
 #print(len(uexpcen))
 
 # Construction de la matrice (creuse) pour le schema explicite cnetree
