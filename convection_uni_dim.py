@@ -57,7 +57,7 @@ uexpcen = u0.copy()
 #print(len(uexpcen))
 
 # Construction de la matrice (creuse) pour le schema explicite cnetree
-Kc = sp.sparse.diags([1/(2*dx),0,-1/(2*dx)],[-1,0,1],shape=(nx,nx))
+Kc = sp.sparse.diags([-1/(2*dx),0,+1/(2*dx)],[-1,0,1],shape=(nx,nx))
 Aexpcen = sp.sparse.identity(nx) - Vitesse*dt*Kc
 #print(Aexpcen.shape)
 
