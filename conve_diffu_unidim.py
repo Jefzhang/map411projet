@@ -16,7 +16,7 @@ lg = 50       # intervalle en x=[0,lg]
 dx = 0.1      # dx = pas d'espace
 dt = 0.025    # dt = pas de temps
 Tfinal = 10   # Temps final souhaite
-Vitesse = 6   # Vitesse de difusion
+Vitesse = 2   # Vitesse de difusion
 Coeffi = 1    #Coefficient de difusion
 xmean = 20
 sigma = 1
@@ -54,37 +54,15 @@ A = sp.sparse.diags([1/(2*dx),-1/dx,1/(2*dx)],[-1,0,1],shape=(nx,nx))
 ########################################################
 # modifier Kc et A
 
+
 Kc = Kc.asformat('csc')       #convert the diag format to csc sparse matrix, then we can get the items that we want to change
 Kc[nx-1,nx-1] += 1/(2*dx)
 A = A.asformat('csc')
 A[nx-1,nx-1] += 1/(2*dx)
 
 
-"""
-row = np.array([nx-1])
-col = np.array([nx-1])
-data = np.array([1/(2*dx)])
-
-Kc_a = coo_matrix((data,(row,col)),shape=(nx,1))
-A_r = Kc_r.copy()
-
-row = np.array([0,0])
-col = np.array([nx-1,nx])
-data1 = np.array([1/Vitesse,1/Vitesse])
-data2 = np.array([1/Coeffi,1/Coeffi])
-
-Kc_d = coo_matrix((data1,(row,col)),shape = (1,nx+1))
-A_d = coo_matrix((data2,(row,col)),shape = (1,nx+1))
 
 
-
-#Kc = bmat([[Kc,Kc_r],[Kc_d]])
-#A = bmat([[A,A_r],[A_d]])
-#Kc = bmat([[Kc,Kc_r],[None,data1]])
-Kc = sp.sparse.vstack([sp.sparse.hstack([Kc,Kc_r]),Kc_d])
-A = sp.sparse.vstack([sp.sparse.hstack([A,A_r]),A_d])
-#A = bmat([[A,A_r],A_d])
-"""
 
 
 Term = sp.sparse.identity(nx) + Vitesse*dt*Kc/2# - Coeffi*dt*A/2
@@ -99,7 +77,8 @@ Tfinal = nt*dt # on corrige le temps final (si Tfinal/dt n'est pas entier
 # Time loop
 plt.ion()
 for n in range(1,nt+1):
-    ucrankni[1:nx+1] = sp.sparse.linalg.spsolve(Mata,Matb*ucrankni[1:nx+1])
+    #ucrankni[1:nx+1] = sp.sparse.linalg.spsolve(Mata,Matb*ucrankni[1:nx+1])
+
 
     if n%2 ==0:
         u1[1:nx+1] = sp.sparse.linalg.spsolve(Mata,Matb*u1[1:nx+1]+fsour[1:nx+1])
@@ -107,18 +86,27 @@ for n in range(1,nt+1):
         u1[1:nx+1] = sp.sparse.linalg.spsolve(Mata,Matb*u1[1:nx+1])
 
 
+
     if n%5 == 0:
         plt.figure(1)
         plt.clf()
 
-        plt.subplot(121)
+        '''
+        plt.subplot(111)
         plt.plot(x,u0,'b',x,ucrankni,'r')
         plt.xlabel('$x$')
         plt.title('Schema Crank-Nicholson')
+        if(n == nt/2):
+            plt.savefig('diffsortiemo.png')
+        '''
 
-        plt.subplot(122)
+
+        plt.subplot(111)
         plt.plot(x,u1,'r')
         plt.xlabel('$x$')
         plt.title('Schema Crank-Nicholson avec le terme source')
+        if(n == nt/2):
+            plt.savefig('CNsource.png')
+
 
         plt.pause(0.1)
